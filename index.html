@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LCS Text Comparison Tool</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top">
+    <h1>Text Comparison using Longest Common Subsequence</h1>
+    <p>Paste two documents. The tool finds the longest run of tokens that appear in both, in the same order, and marks everything else as removed or added.</p>
+  </header>
+
+  <main>
+    <section class="inputs" aria-label="Documents">
+      <label class="doc">
+        <span class="doc-title">Document A (original)</span>
+        <textarea id="textA" rows="9" placeholder="Paste the first document here"></textarea>
+      </label>
+      <label class="doc">
+        <span class="doc-title">Document B (changed)</span>
+        <textarea id="textB" rows="9" placeholder="Paste the second document here"></textarea>
+      </label>
+    </section>
+
+    <section class="controls" aria-label="Options">
+      <fieldset>
+        <legend>Compare by</legend>
+        <label><input type="radio" name="mode" value="word" checked> Words</label>
+        <label><input type="radio" name="mode" value="char"> Characters</label>
+        <label><input type="radio" name="mode" value="line"> Lines</label>
+      </fieldset>
+      <fieldset>
+        <legend>Ignore</legend>
+        <label><input type="checkbox" id="ignoreCase" checked> Letter case</label>
+        <label><input type="checkbox" id="ignorePunct"> Punctuation</label>
+      </fieldset>
+      <div class="buttons">
+        <button id="compareBtn" class="primary">Compare</button>
+        <button id="sampleBtn">Load sample</button>
+        <button id="swapBtn">Swap A and B</button>
+        <button id="clearBtn">Clear</button>
+      </div>
+    </section>
+
+    <p id="message" class="message" role="status" hidden></p>
+
+    <section id="results" hidden>
+      <div class="stats" id="stats"></div>
+
+      <div class="legend">
+        <span><i class="sw same"></i> Common to both</span>
+        <span><i class="sw del"></i> Only in A (removed)</span>
+        <span><i class="sw add"></i> Only in B (added)</span>
+        <span class="hint">Hover a common token to see its match in the other document.</span>
+      </div>
+
+      <div class="outputs">
+        <article>
+          <h2>Document A</h2>
+          <div id="outA" class="out"></div>
+        </article>
+        <article>
+          <h2>Document B</h2>
+          <div id="outB" class="out"></div>
+        </article>
+      </div>
+
+      <section class="table-section">
+        <h2>How the table was filled</h2>
+        <p id="tableNote"></p>
+        <div id="tableWrap" class="table-wrap"></div>
+      </section>
+
+      <section class="algo">
+        <h2>The algorithm</h2>
+        <p>Let <b>L[i][j]</b> be the LCS length of the first <i>i</i> tokens of A and the first <i>j</i> tokens of B.</p>
+        <p class="rule">If A[i] = B[j]: L[i][j] = L[i-1][j-1] + 1<br>Otherwise: L[i][j] = max( L[i-1][j], L[i][j-1] )</p>
+        <p>Starting at L[n][m] and walking back through the table recovers the common tokens. Time complexity is <b>O(n × m)</b>, and so is the memory for the table.</p>
+      </section>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
